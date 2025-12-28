@@ -52,31 +52,27 @@
       margin-top: 10px;
     }
 
-    /* ★ 単語表示（番号を別表示） */
+    /* ★ 単語表示（英単語だけ大きく） */
     .word{
-      display:flex;
-      align-items:baseline;
-      gap:12px;
       margin: 18px 0 10px;
       line-height: 1.1;
       word-break: break-word;
-    }
-    .word-num{
-      font-size: 16px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid #ccc;
-      color: #666;
-      line-height: 1;
-      flex: 0 0 auto;
-      user-select: none;
     }
     .word-text{
       font-size: 36px;
       font-weight: 800;
       line-height: 1.1;
       word-break: break-word;
+      display:inline-block;
+    }
+
+    /* ★ ヘッダー用の番号表示（枠なし） */
+    .word-num-header{
+      font-size: 14px;
+      color: #666;
+      margin-left: 6px;
+      user-select: none;
+      line-height: 1;
     }
 
     .meaning{
@@ -169,21 +165,8 @@
     body.dark .rangeInput{
       border-color:#2a2f3a;
     }
-    body.dark .word-num{
-      border-color:#444;
-      color:#aaa;
-    }
-
-    /* ★ ヘッダー用の番号表示（枠なし） */
-    .word-num-header{
-      font-size: 14px;
-      color: #666;
-      margin-left: 6px;
-      user-select: none;
-    }
-
     body.dark .word-num-header{
-      color: #aaa;
+      color:#aaa;
     }
   </style>
 </head>
@@ -215,14 +198,13 @@
         <input id="rangeTo" class="rangeInput" type="number" min="1" value="10">
       </label>
 
+      <!-- ★ リスト消去の横に番号（枠なし）を表示 -->
       <button class="small danger" id="clearWrongBtn" type="button">リスト消去</button>
       <span id="wordNumHeader" class="word-num-header"></span>
-
     </div>
 
-    <!-- ★ 単語表示：番号と単語を分離 -->
+    <!-- ★ 単語表示：英単語だけ -->
     <div class="word">
-      <span class="word-num" id="wordNum"></span>
       <span class="word-text" id="wordText">（reading…）</span>
     </div>
 
@@ -2360,7 +2342,7 @@ function getCurrentItem(st){
 //  UI
 // =======================
 function setUI(st){
-  const wordNumEl  = document.getElementById("wordNum");
+  const wordNumHeaderEl = document.getElementById("wordNumHeader");
   const wordTextEl = document.getElementById("wordText");
   const meaningEl = document.getElementById("meaning");
   const progressEl = document.getElementById("progress");
@@ -2371,7 +2353,7 @@ function setUI(st){
 
   // プールが空なら案内
   if (!st.poolIdxs.length){
-    wordNumEl.textContent  = "";
+    wordNumHeaderEl.textContent = "";
     wordTextEl.textContent = "（出題がありません）";
     meaningEl.textContent = "範囲を広げるか、「復習開始」をOFFにするか、復習リストを登録してね";
     progressEl.textContent = "0 / 0";
@@ -2399,8 +2381,8 @@ function setUI(st){
   const wrongSet = loadWrongSet();
   missToggle.checked = wrongSet.has(current.en);
 
-  // ★ 番号と単語を別々に表示（ピリオドなし）
-  wordNumEl.textContent  = number;
+  // ★ 番号はヘッダー（リスト消去の横）に表示、英単語は下に表示（ピリオドなし）
+  wordNumHeaderEl.textContent = number;
   wordTextEl.textContent = current.en;
 
   if (st.phase === 0){
