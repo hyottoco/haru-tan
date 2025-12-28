@@ -173,6 +173,18 @@
       border-color:#444;
       color:#aaa;
     }
+
+    /* ★ ヘッダー用の番号表示（枠なし） */
+    .word-num-header{
+      font-size: 14px;
+      color: #666;
+      margin-left: 6px;
+      user-select: none;
+    }
+
+    body.dark .word-num-header{
+      color: #aaa;
+    }
   </style>
 </head>
 
@@ -204,6 +216,8 @@
       </label>
 
       <button class="small danger" id="clearWrongBtn" type="button">リスト消去</button>
+      <span id="wordNumHeader" class="word-num-header"></span>
+
     </div>
 
     <!-- ★ 単語表示：番号と単語を分離 -->
