@@ -52,10 +52,29 @@
       margin-top: 10px;
     }
 
+    /* ★ 単語表示（番号を別表示） */
     .word{
+      display:flex;
+      align-items:baseline;
+      gap:12px;
+      margin: 18px 0 10px;
+      line-height: 1.1;
+      word-break: break-word;
+    }
+    .word-num{
+      font-size: 16px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #ccc;
+      color: #666;
+      line-height: 1;
+      flex: 0 0 auto;
+      user-select: none;
+    }
+    .word-text{
       font-size: 36px;
       font-weight: 800;
-      margin: 18px 0 10px;
       line-height: 1.1;
       word-break: break-word;
     }
@@ -150,6 +169,10 @@
     body.dark .rangeInput{
       border-color:#2a2f3a;
     }
+    body.dark .word-num{
+      border-color:#444;
+      color:#aaa;
+    }
   </style>
 </head>
 
@@ -183,7 +206,12 @@
       <button class="small danger" id="clearWrongBtn" type="button">リスト消去</button>
     </div>
 
-    <div class="word" id="word">（reading…）</div>
+    <!-- ★ 単語表示：番号と単語を分離 -->
+    <div class="word">
+      <span class="word-num" id="wordNum"></span>
+      <span class="word-text" id="wordText">（reading…）</span>
+    </div>
+
     <div class="meaning" id="meaning"></div>
 
     <!-- ★答え合わせ表示中だけ出る：間違えたチェック -->
@@ -2114,10 +2142,6 @@ const VOCAB = [
 // =======================
 const KEY_AUDIO       = "vocab_app_audio_on_v1";
 
-// 全モード/間違いモードを別で進行保存（範囲ごとに分けるので、キーは関数で生成）
-const KEY_STATE_ALL   = "vocab_state_all_v1";
-const KEY_STATE_WRONG = "vocab_state_wrong_v1";
-
 // 間違いセット（en文字列で管理）
 const KEY_WRONG_SET   = "vocab_wrong_set_v1";
 
@@ -2322,7 +2346,8 @@ function getCurrentItem(st){
 //  UI
 // =======================
 function setUI(st){
-  const wordEl = document.getElementById("word");
+  const wordNumEl  = document.getElementById("wordNum");
+  const wordTextEl = document.getElementById("wordText");
   const meaningEl = document.getElementById("meaning");
   const progressEl = document.getElementById("progress");
   const btn = document.getElementById("nextBtn");
@@ -2332,7 +2357,8 @@ function setUI(st){
 
   // プールが空なら案内
   if (!st.poolIdxs.length){
-    wordEl.textContent = "（出題がありません）";
+    wordNumEl.textContent  = "";
+    wordTextEl.textContent = "（出題がありません）";
     meaningEl.textContent = "範囲を広げるか、「復習開始」をOFFにするか、復習リストを登録してね";
     progressEl.textContent = "0 / 0";
     btn.textContent = "はじめる";
@@ -2359,8 +2385,11 @@ function setUI(st){
   const wrongSet = loadWrongSet();
   missToggle.checked = wrongSet.has(current.en);
 
+  // ★ 番号と単語を別々に表示（ピリオドなし）
+  wordNumEl.textContent  = number;
+  wordTextEl.textContent = current.en;
+
   if (st.phase === 0){
-    wordEl.textContent = `${number}. ${current.en}`;
     meaningEl.textContent = "";
     btn.textContent = "日本語を表示（答え合わせ）";
 
@@ -2370,7 +2399,6 @@ function setUI(st){
     speakEnglish(current.en);
 
   } else {
-    wordEl.textContent = `${number}. ${current.en}`;
     meaningEl.textContent = current.ja;
     btn.textContent = "正解だったかな？次へGO！";
 
@@ -2414,7 +2442,7 @@ function resetAll(){
 // =======================
 function init(){
   if (!VOCAB.length){
-    document.getElementById("word").textContent = "VOCABが空です";
+    document.getElementById("wordText").textContent = "VOCABが空です";
     return;
   }
 
