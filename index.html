@@ -277,8 +277,8 @@
         復習開始 <span class="count" id="wrongCount">（0）</span>
       </label>
 
-      <button class="small toggle" id="audioToggle" type="button">🔊</button>
-      <button class="small toggle" id="themeToggle" type="button">🌙</button>
+      <button class="small toggle" id="audioToggle" type="button">🔊 発音：ON</button>
+      <button class="small toggle" id="themeToggle" type="button">🌙 ダーク</button>
     </div>
 
     <!-- ★3段目（範囲＋単語番号） -->
@@ -409,7 +409,8 @@ function applyTheme(theme){
   const isDark = theme === "dark";
   document.body.classList.toggle("dark", isDark);
   const btn = document.getElementById("themeToggle");
-  if (btn) btn.textContent = isDark ? "☀️ ライト" : "🌙 ダーク";
+  // if (btn) btn.textContent = isDark ? "☀️ ライト" : "🌙 ダーク";
+  if (btn) btn.textContent = isDark ? "☀️" : "🌙";
 }
 
 // =======================
@@ -435,7 +436,8 @@ function saveAudioOn(on){
 }
 function updateAudioUI(){
   const on = loadAudioOn();
-  document.getElementById("audioToggle").textContent = on ? "🔊 発音：ON" : "🔇 発音：OFF";
+  // document.getElementById("audioToggle").textContent = on ? "🔊 発音：ON" : "🔇 発音：OFF";
+  document.getElementById("audioToggle").textContent = on ? "🔊" : "🔇";
 }
 
 function speakEnglish(text){
