@@ -206,6 +206,20 @@
       padding: 10px 12px;     /* 高さを揃える */
       border-radius: 999px;   /* 見た目も揃う（好みで） */
     }
+
+        /* 範囲の下に単語番号を置く */
+    .rangeStack{
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* 単語番号を範囲入力と少し揃える（好みで） */
+    .rangeStack .word-num-header{
+      margin-left: 6px;
+    }
+
+
   </style>
 </head>
 
@@ -253,17 +267,32 @@
         <span class="count" id="wrongCount">（0）</span>
       </label>
 
-      <!-- ★ 範囲指定 -->
+      <!-- ★ 範囲指定
       <label class="badge" style="display:flex; gap:8px; align-items:center;">
         範囲
         <input id="rangeFrom" class="rangeInput" type="number" min="1" value="1">
         〜
         <input id="rangeTo" class="rangeInput" type="number" min="1" value="10">
-      </label>
+      </label> -->
 
       <!-- ★ リスト消去の横に番号（枠なし）を表示 -->
+      <!-- <span id="wordNumHeader" class="word-num-header"></span> -->
 
-      <span id="wordNumHeader" class="word-num-header"></span>
+      <!-- ★範囲 + 単語番号を縦にまとめる箱 -->
+      <div class="rangeStack">
+        <!-- ★ 範囲指定 -->
+        <label class="badge rangeLine" style="display:flex; gap:8px; align-items:center;">
+          範囲
+          <input id="rangeFrom" class="rangeInput" type="number" min="1" value="1">
+          〜
+          <input id="rangeTo" class="rangeInput" type="number" min="1" value="10">
+        </label>
+
+        <!-- ★ 単語番号（範囲の下に来る） -->
+        <span id="wordNumHeader" class="word-num-header"></span>
+      </div>
+
+
     </div>
 
     <!-- =========================================================
