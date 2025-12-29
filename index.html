@@ -7,14 +7,30 @@
 
   <style>
     /* =========================================================
-       基本（ライト） ※熟語アプリの見た目・配置に合わせる
+       基本（ライト）
      ========================================================= */
+    :root{
+      --bd: #ddd;
+      --bd-dark: #2a2f3a;
+      --bg: #fff;
+      --fg: #111;
+      --muted: #666;
+      --card: #fff;
+      --card-dark: #171a21;
+
+      --pill-pad-y: 10px;
+      --pill-pad-x: 12px;
+      --pill-radius: 999px;
+
+      --btn-radius: 12px;
+    }
+
     body{
       font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
       margin: 0;
       padding: 20px;
-      background: #ffffff;
-      color: #111;
+      background: var(--bg);
+      color: var(--fg);
       transition: background .2s ease, color .2s ease;
     }
 
@@ -22,28 +38,15 @@
       max-width: 820px;
       margin: 0 auto;
       padding: 18px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--bd);
       border-radius: 14px;
-      background: #fff;
+      background: var(--card);
       transition: background .2s ease, border-color .2s ease;
     }
 
-    .top{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .badge{
-      font-size: 14px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid #ddd;
-      background: transparent;
-      transition: background .2s ease, border-color .2s ease, color .2s ease;
-    }
-
+    /* =========================================================
+       共通：横並び行
+     ========================================================= */
     .row{
       display:flex;
       gap:10px;
@@ -52,7 +55,132 @@
       margin-top: 10px;
     }
 
-    /* ★ 単語表示（英単語だけ大きく） */
+    /* =========================================================
+       バッジ/小ボタン/トグルの「見た目統一」
+       - 0/0、リセット、復習リスト消去、復習開始、発音、テーマ を同じ高さに
+     ========================================================= */
+    .badge,
+    button.small,
+    .pill{
+      font-size: 14px;
+      line-height: 1;
+      padding: var(--pill-pad-y) var(--pill-pad-x);
+      border-radius: var(--pill-radius);
+      border: 1px solid var(--bd);
+      background: transparent;
+      color: inherit;
+      transition: background .2s ease, border-color .2s ease, color .2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    /* クリックできるpill（label用） */
+    .pill{
+      cursor: pointer;
+    }
+
+    /* 小ボタン */
+    button.small{
+      cursor: pointer;
+    }
+    button.small:active{ transform: translateY(1px); }
+
+    /* 通常ボタン（次へ等） */
+    .btns{
+      display:flex;
+      gap:10px;
+      margin-top: 16px;
+      flex-wrap:wrap;
+    }
+    button{
+      font-size: 18px;
+      padding: 12px 14px;
+      border-radius: var(--btn-radius);
+      border: 1px solid var(--bd);
+      background: #fff;
+      color: #111;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, color .2s ease;
+    }
+    button:active{ transform: translateY(1px); }
+
+    .primary{ font-weight: 800; }
+    .danger{ border-color:#f2c; }
+    .toggle{ border-color:#88c; }
+
+    /* pillの色分け（統一感） */
+    .pill.togglePill{ border-color:#88c; }
+    .pill.dangerPill{ border-color:#f2c; }
+
+    /* pill内のチェック */
+    .pill input[type="checkbox"]{
+      width:18px;
+      height:18px;
+      margin:0;
+      accent-color: #88c;
+      transform: translateY(0.5px); /* 微調整 */
+    }
+    .pill .count{
+      opacity: .85;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* =========================================================
+       上段（0/0・リセット・復習リスト消去）
+     ========================================================= */
+    .topbar{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .topbar-right{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    /* =========================================================
+       範囲入力
+     ========================================================= */
+    .rangeInput{
+      width: 3.5em;      /* 4桁向け */
+      padding: 6px 8px;
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      font-size: 14px;
+      background: transparent;
+      color: inherit;
+      text-align: right;
+    }
+
+    /* 範囲＋単語番号：縦にまとめる */
+    .rangeStack{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .word-num-header{
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--muted);
+      margin-left: 6px;
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* =========================================================
+       単語表示
+     ========================================================= */
+    .displayArea{
+      min-height: 140px; /* ボタンが上下しない */
+    }
+
     .word{
       margin: 18px 0 10px;
       line-height: 1.1;
@@ -66,15 +194,6 @@
       display:inline-block;
     }
 
-    /* ★ ヘッダー用の番号表示（枠なし） */
-    .word-num-header{
-      font-size: 14px;
-      color: #666;
-      margin-left: 6px;
-      user-select: none;
-      line-height: 1;
-    }
-
     .meaning{
       font-size: 28px;
       margin: 10px 0 0;
@@ -84,68 +203,13 @@
     }
 
     /* =========================================================
-       ★ ここが今回の修正（表示エリアの高さを固定）
-       - 英単語〜日本語の領域を固定する箱
-       - この箱の下にボタンが来るので、ボタン位置が上下しない
+       復習チェック（答え合わせ時だけ）
      ========================================================= */
-    .displayArea{
-      /* ここを調整：長めの単語/日本語でもボタンが動かない高さ */
-      min-height: 140px;
-    }
-
-    .btns{
-      display:flex;
-      gap:10px;
-      margin-top: 16px;
-      flex-wrap:wrap;
-    }
-
-    button{
-      font-size: 18px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      background: #fff;
-      color: #111;
-      cursor: pointer;
-      transition: background .2s ease, border-color .2s ease, color .2s ease;
-    }
-    button:active{ transform: translateY(1px); }
-
-    .primary{ font-weight: 800; }
-    .danger{ border-color:#f2c; }
-    .toggle{ border-color:#88c; }
-    .small{ font-size: 14px; padding: 10px 12px; border-radius: 12px; }
-
-    /* 範囲入力（バッジ内） */
-    /* .rangeInput{
-      width:72px;
-      padding:6px 8px;
-      border:1px solid #ddd;
-      border-radius:10px;
-      font-size: 14px;
-      background: transparent;
-      color: inherit;
-    } */
-
-    .rangeInput{
-      width: 3.5em;      /* ★4桁くらいにちょうど良い（おすすめ） */
-      padding: 6px 8px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      font-size: 14px;
-      background: transparent;
-      color: inherit;
-      text-align: right; /* ★数字が右寄せで見やすい（任意） */
-    }
-
-
-    /* 間違いチェック（答え合わせ時だけ表示） */
     .missBox{
       display:none;
       margin-top: 12px;
       padding: 10px 12px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--bd);
       border-radius: 12px;
       gap: 10px;
       align-items: center;
@@ -154,105 +218,47 @@
       max-width: 100%;
       flex: 0 0 auto;
       align-self: flex-start;
+      background: rgba(0,0,0,0.02);
     }
     .missBox.show{ display:inline-flex; }
-    .missBox input{ width: 22px; height: 22px; }
+    .missBox input{ width: 22px; height: 22px; margin:0; }
     .missBox .label{ font-size: 16px; user-select: none; white-space: nowrap; display: inline-block;}
 
     /* =========================================================
-       ダークモード（bodyに .dark を付ける）
+       ダークモード
      ========================================================= */
     body.dark{
       background: #0f1115;
       color: #e9e9ea;
     }
     body.dark .card{
-      background: #171a21;
-      border-color: #2a2f3a;
+      background: var(--card-dark);
+      border-color: var(--bd-dark);
     }
-    body.dark .badge{
-      border-color: #2a2f3a;
+    body.dark .badge,
+    body.dark button.small,
+    body.dark .pill{
+      border-color: var(--bd-dark);
       background: rgba(255,255,255,0.03);
       color: #d6d6d8;
     }
     body.dark button{
       background: #1f2430;
-      border-color: #2a2f3a;
+      border-color: var(--bd-dark);
       color: #e9e9ea;
     }
     body.dark button:hover{ background: #252b3a; }
     body.dark .missBox{
-      border-color: #2a2f3a;
+      border-color: var(--bd-dark);
       background: rgba(255,255,255,0.03);
     }
-    body.dark .rangeInput{
-      border-color:#2a2f3a;
-    }
-    body.dark .word-num-header{
-      color:#aaa;
-    }
-
-        /* =========================
-      ★上段の 0/0・リセット・復習リスト消去 を揃える
-    ========================= */
-    .topbar{
-      display:flex;
-      justify-content: space-between;
-      align-items:center;     /* 高さ位置を揃える */
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .topbar-right{
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    /* badge と small button の高さ・文字を揃える */
-    .badge,
-    button.small{
-      font-size: 14px;
-      line-height: 1;         /* 文字の上下ズレ防止 */
-      padding: 10px 12px;     /* 高さを揃える */
-      border-radius: 999px;   /* 見た目も揃う（好みで） */
-    }
-
-        /* 範囲の下に単語番号を置く */
-    .rangeStack{
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    /* 単語番号を範囲入力と少し揃える（好みで） */
-    .rangeStack .word-num-header{
-      margin-left: 6px;
-    }
-
-
+    body.dark .rangeInput{ border-color: var(--bd-dark); }
+    body.dark .word-num-header{ color:#aaa; }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <!-- <div class="top">
-      <div class="badge" id="progress">0 / 0</div>
-
-    <div class="btns">
-      <button id="resetBtn" class="small danger">リセット</button>
-    </div>
-      
-    <div class="row"></div>
-       <button class="small danger" id="clearWrongBtn" type="button">復習リスト消去</button>
-    </div>
-
-      <div class="row">
-        <button class="toggle small" id="audioToggle">🔊 発音：ON</button>
-        <button class="toggle small" id="themeToggle">🌙 ダーク</button>
-      </div>
-    </div> -->
 
     <!-- ★上段（0/0・リセット・復習リスト消去） -->
     <div class="topbar">
@@ -264,87 +270,54 @@
       </div>
     </div>
 
-    <!-- ★2段目（発音・ダーク） -->
+    <!-- ★2段目（復習開始・発音・ダーク） -->
     <div class="row">
-      <button class="toggle small" id="audioToggle">🔊 発音：ON</button>
-      <button class="toggle small" id="themeToggle">🌙 ダーク</button>
-    </div>
-
-
-    <!-- 出題モード切替（全 / 間違いのみ） + 範囲指定 -->
-    <div class="row">
-      <label class="badge" style="display:flex; gap:8px; align-items:center;">
-        <input type="checkbox" id="wrongOnlyToggle" style="width:18px;height:18px;" />
-        復習開始
-        <span class="count" id="wrongCount">（0）</span>
+      <label class="pill togglePill" for="wrongOnlyToggle">
+        <input type="checkbox" id="wrongOnlyToggle" />
+        復習開始 <span class="count" id="wrongCount">（0）</span>
       </label>
 
-      <!-- ★ 範囲指定
-      <label class="badge" style="display:flex; gap:8px; align-items:center;">
-        範囲
-        <input id="rangeFrom" class="rangeInput" type="number" min="1" value="1">
-        〜
-        <input id="rangeTo" class="rangeInput" type="number" min="1" value="10">
-      </label> -->
+      <button class="small toggle" id="audioToggle" type="button">🔊 発音：ON</button>
+      <button class="small toggle" id="themeToggle" type="button">🌙 ダーク</button>
+    </div>
 
-      <!-- ★ リスト消去の横に番号（枠なし）を表示 -->
-      <!-- <span id="wordNumHeader" class="word-num-header"></span> -->
-
-      <!-- ★範囲 + 単語番号を縦にまとめる箱 -->
+    <!-- ★3段目（範囲＋単語番号） -->
+    <div class="row">
       <div class="rangeStack">
-        <!-- ★ 範囲指定 -->
-        <label class="badge rangeLine" style="display:flex; gap:8px; align-items:center;">
+        <label class="badge" style="display:flex; gap:8px; align-items:center;">
           範囲
           <input id="rangeFrom" class="rangeInput" type="number" min="1" value="1">
           〜
           <input id="rangeTo" class="rangeInput" type="number" min="1" value="10">
         </label>
 
-        <!-- ★ 単語番号（範囲の下に来る） -->
         <span id="wordNumHeader" class="word-num-header"></span>
       </div>
-
-
     </div>
 
-    <!-- =========================================================
-         ★ ここを displayArea で包んで「高さ固定」する
-         - この箱の中で文章が増減しても、
-           箱の下（ボタン）の位置は変わらない
-    ========================================================= -->
+    <!-- ★表示エリア（高さ固定） -->
     <div class="displayArea">
-      <!-- ★ 単語表示：英単語だけ -->
       <div class="word">
         <span class="word-text" id="wordText">（reading…）</span>
       </div>
-
       <div class="meaning" id="meaning"></div>
-
-      <!-- ★答え合わせ表示中だけ出る：間違えたチェック -->
-      <!-- <div class="missBox" id="missBox">
-        <input type="checkbox" id="missToggle">
-        <label class="label" for="missToggle">復習リストに追加</label>
-      </div> -->
     </div>
 
-    <!-- 次へ / 発音 / リセット -->
+    <!-- 次へ -->
     <div class="btns">
-      <button class="primary" id="nextBtn">はじめる</button>
-      <!-- <button id="speakBtn">🔊 発音</button>
-      <button id="resetBtn" class="danger">リセット（最初から）</button> -->
+      <button class="primary" id="nextBtn" type="button">はじめる</button>
     </div>
 
-    <!-- ▼ ★ここに移動する -->
+    <!-- ▼答え合わせ中だけ出る：復習リストに追加 -->
     <div class="missBox" id="missBox">
       <input type="checkbox" id="missToggle">
       <label class="label" for="missToggle">復習リストに追加</label>
     </div>
 
+    <!-- 発音 -->
     <div class="btns">
-      <button id="speakBtn">🔊 発音</button>
-      <!-- <button id="resetBtn" class="danger">リセット（最初から）</button> -->
+      <button id="speakBtn" type="button">🔊 発音</button>
     </div>
-
 
   </div>
 
@@ -352,7 +325,6 @@
 /**
  * ▼単語リスト（例：10語）
  * 形式： { en: "apple", ja: "りんご" }
- * ※ ここにあなたの全単語を入れてOK
  */
 const VOCAB = [
   { en: "create", ja: "を創り出す；を引き起こす" },
@@ -372,17 +344,9 @@ const VOCAB = [
 //  保存キー
 // =======================
 const KEY_AUDIO       = "vocab_app_audio_on_v1";
-
-// 間違いセット（en文字列で管理）
 const KEY_WRONG_SET   = "vocab_wrong_set_v1";
-
-// 間違いのみモードON/OFF
 const KEY_WRONG_ONLY  = "vocab_wrong_only_v1";
-
-// テーマ（ライト/ダーク）
 const KEY_THEME       = "vocab_theme_v1";
-
-// ★ 範囲
 const KEY_RANGE       = "vocab_range_v1";
 
 // =======================
@@ -528,13 +492,11 @@ function getPoolIndices(){
   const start = from - 1; // 0-based
   const end   = to - 1;
 
-  // まず「範囲内のVOCAB index」だけ集める
   const ranged = [];
   for (let i = start; i <= end; i++){
     if (i >= 0 && i < VOCAB.length) ranged.push(i);
   }
 
-  // 復習のみONなら、さらに「間違いセット」で絞る
   if (!loadWrongOnly()){
     return ranged;
   }
@@ -556,7 +518,6 @@ function loadState(){
   if (typeof st.index !== "number" || typeof st.phase !== "number") return null;
   if (st.phase !== 0 && st.phase !== 1) return null;
 
-  // プールが変化したら作り直す（範囲変更、間違いモード切替など）
   const poolNow = getPoolIndices();
   if (st.poolIdxs.length !== poolNow.length) return null;
 
@@ -569,7 +530,7 @@ function saveState(st){
 
 function getCurrentItem(st){
   if (!st.poolIdxs.length) return null;
-  const poolIndex = st.poolIdxs[ st.order[st.index] ]; // VOCABのindex
+  const poolIndex = st.poolIdxs[ st.order[st.index] ];
   return { item: VOCAB[poolIndex], vocabIndex: poolIndex };
 }
 
@@ -586,7 +547,6 @@ function setUI(st){
   const missBox = document.getElementById("missBox");
   const missToggle = document.getElementById("missToggle");
 
-  // プールが空なら案内
   if (!st.poolIdxs.length){
     wordNumHeaderEl.textContent = "";
     wordTextEl.textContent = "（出題がありません）";
@@ -598,7 +558,6 @@ function setUI(st){
     return;
   }
 
-  // 1周終わったら再シャッフル
   if (st.index >= st.poolIdxs.length){
     st = freshStateForPool(getPoolIndices());
     saveState(st);
@@ -607,33 +566,24 @@ function setUI(st){
   const cur = getCurrentItem(st);
   const current = cur.item;
 
-  // ★ ここが「コード順番号」：VOCABの並びに固定
   const number = cur.vocabIndex + 1;
 
   progressEl.textContent = `${st.index + 1} / ${st.poolIdxs.length}`;
 
-  // この単語がすでに間違いリストにあるか
   const wrongSet = loadWrongSet();
   missToggle.checked = wrongSet.has(current.en);
 
-  // ★ 番号はヘッダー（リスト消去の横）に表示、英単語は下に表示（ピリオドなし）
   wordNumHeaderEl.textContent = number;
   wordTextEl.textContent = current.en;
 
   if (st.phase === 0){
     meaningEl.textContent = "";
     btn.textContent = "日本語を表示（答え合わせ）";
-
     missBox.classList.remove("show");
-
-    // 英語が表示された瞬間に発音（ONのとき）
     speakEnglish(current.en);
-
   } else {
     meaningEl.textContent = current.ja;
     btn.textContent = "正解だったかな？次へGO！";
-
-    // 答え合わせ中だけチェック欄表示
     missBox.classList.add("show");
   }
 }
@@ -641,13 +591,12 @@ function setUI(st){
 function nextAction(){
   let st = loadState();
 
-  // stateが無効（プール変化など）なら作り直す
   if (!st){
     const pool = getPoolIndices();
     st = freshStateForPool(pool);
     saveState(st);
     setUI(st);
-    return; // いきなり答え表示に進めない
+    return;
   }
 
   if (st.phase === 0){
@@ -718,7 +667,6 @@ function init(){
 
     saveRange({ from, to });
 
-    // 範囲が変わったら、その条件で最初から
     const pool = getPoolIndices();
     const st = freshStateForPool(pool);
     saveState(st);
@@ -733,13 +681,12 @@ function init(){
   // 間違い数表示
   updateWrongCountUI();
 
-  // 間違いのみトグル初期化
+  // 復習開始トグル初期化
   const wrongOnlyToggle = document.getElementById("wrongOnlyToggle");
   wrongOnlyToggle.checked = loadWrongOnly();
   wrongOnlyToggle.addEventListener("change", () => {
     saveWrongOnly(wrongOnlyToggle.checked);
 
-    // モード切替したら、そのモード＆範囲で最初から
     const pool = getPoolIndices();
     const st = freshStateForPool(pool);
     saveState(st);
@@ -763,12 +710,11 @@ function init(){
     updateWrongCountUI();
   });
 
-  // 間違いリスト消去
+  // 復習リスト消去
   document.getElementById("clearWrongBtn").addEventListener("click", () => {
     saveWrongSet(new Set());
     updateWrongCountUI();
 
-    // 間違いのみモード中ならプールが空になる可能性があるのでUI更新
     const pool = getPoolIndices();
     const st = freshStateForPool(pool);
     saveState(st);
@@ -801,7 +747,6 @@ function init(){
     saveAudioOn(!on);
     updateAudioUI();
 
-    // ONにした瞬間、今表示中の英語を1回読む（phase=0の時だけ）
     const st2 = loadState();
     if (st2 && st2.phase === 0){
       const cur = getCurrentItem(st2);
