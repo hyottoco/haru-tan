@@ -125,7 +125,17 @@
       color: var(--review-fg);
       border-radius: 14px;
     }
-    .reviewUI:hover{ background: var(--review-bg-hover); }
+    /* .reviewUI:hover{ background: var(--review-bg-hover); } */
+    /* ★ホバーできる環境（マウスなど）だけ hover を有効にする */
+    @media (hover: hover) and (pointer: fine){
+      .reviewUI:hover{ background: var(--review-bg-hover); }
+    }
+
+    /* ★タッチ端末では hover を無効化（iPhoneで色が戻らない対策） */
+    @media (hover: none){
+      .reviewUI:hover{ background: var(--review-bg); }
+    }
+
     .reviewUI input[type="checkbox"]{ accent-color: var(--review-accent); }
 
     /* ★追加：このクラスを付けた要素だけ「押している間」白くする */
