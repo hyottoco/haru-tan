@@ -301,13 +301,29 @@
     /* iPhoneのダブルタップ拡大を起こしにくくする */
     button, label, input, .pill{
       touch-action: manipulation;
-}
+    }
+
+    /* ★ページタイトル */
+    .page-title{
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 12px;
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
+
+    /* ダークモード対応 */
+    body.dark .page-title{
+      color: #e9e9ea;
+    }
 
   </style>
 </head>
 
 <body>
   <div class="card">
+
+    <h1 id="pageTitle" class="page-title"></h1>
 
     <div class="topbar">
       <div class="badge" id="progress">0 / 0</div>
@@ -2519,6 +2535,10 @@ function resetAll(){
 }
 
 function init(){
+
+  document.getElementById("pageTitle").textContent = document.title;
+
+
   if (!VOCAB.length){
     document.getElementById("wordText").textContent = "VOCABが空です";
     return;
