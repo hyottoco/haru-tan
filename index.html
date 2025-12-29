@@ -6,9 +6,6 @@
   <title>ハルタン1900（重複なしランダム）</title>
 
   <style>
-    /* =========================================================
-       基本（ライト）
-     ========================================================= */
     :root{
       --bd: #ddd;
       --bd-dark: #2a2f3a;
@@ -24,7 +21,7 @@
 
       --btn-radius: 12px;
 
-      /* ★復習系の淡い色（統一） */
+      /* 復習系の淡い色（統一） */
       --review-bg: #f3f6fb;
       --review-bd: #cfd8e3;
       --review-fg: #334155;
@@ -52,9 +49,6 @@
       transition: background .2s ease, border-color .2s ease;
     }
 
-    /* =========================================================
-       共通：横並び行
-     ========================================================= */
     .row{
       display:flex;
       gap:10px;
@@ -63,9 +57,6 @@
       margin-top: 10px;
     }
 
-    /* =========================================================
-       バッジ/小ボタン/トグルの「見た目統一」
-     ========================================================= */
     .badge,
     button.small,
     .pill{
@@ -91,7 +82,6 @@
     }
     button.small:active{ transform: translateY(1px); }
 
-    /* 通常ボタン（次へ等） */
     .btns{
       display:flex;
       gap:10px;
@@ -114,11 +104,8 @@
     .danger{ border-color:#f2c; }
     .toggle{ border-color:#88c; }
 
-    /* pillの色分け（統一感） */
     .pill.togglePill{ border-color:#88c; }
-    .pill.dangerPill{ border-color:#f2c; }
 
-    /* pill内のチェック */
     .pill input[type="checkbox"]{
       width:18px;
       height:18px;
@@ -131,28 +118,29 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* =========================================================
-       ★復習系UI（淡い色で統一） + 仕上げのワンポイント
-       - 対象：復習Resetボタン、復習開始pill、復習リストに追加（missBox）
-     ========================================================= */
+    /* 復習系UI（淡い色で統一） */
     .reviewUI{
       background: var(--review-bg);
       border-color: var(--review-bd);
       color: var(--review-fg);
-
-      /* ★仕上げのワンポイント：丸みを少し強く */
       border-radius: 14px;
     }
-    .reviewUI:hover{
-      background: var(--review-bg-hover);
+    .reviewUI:hover{ background: var(--review-bg-hover); }
+    .reviewUI input[type="checkbox"]{ accent-color: var(--review-accent); }
+
+    /* ★追加：このクラスを付けた要素だけ「押している間」白くする */
+    .pressWhite:active{
+      background: #fff;               /* 押してる間だけ白 */
+      border-color: var(--review-bd);  /* 枠はそのまま系 */
+      color: var(--review-fg);
     }
-    .reviewUI input[type="checkbox"]{
-      accent-color: var(--review-accent);
+    /* ダーク時は押してる間だけ “少し明るい色” に（真っ白だと眩しいので） */
+    body.dark .pressWhite:active{
+      background: rgba(255,255,255,0.16);
+      border-color: var(--bd-dark);
+      color: #e5e7eb;
     }
 
-    /* =========================================================
-       上段（0/0・リセット・復習リスト消去）
-     ========================================================= */
     .topbar{
       display:flex;
       justify-content: space-between;
@@ -167,9 +155,6 @@
       flex-wrap:wrap;
     }
 
-    /* =========================================================
-       範囲入力
-     ========================================================= */
     .rangeInput{
       width: 3.5em;
       padding: 6px 8px;
@@ -195,19 +180,13 @@
       user-select: none;
     }
 
-    /* =========================================================
-       単語表示
-     ========================================================= */
-    .displayArea{
-      min-height: 140px;
-    }
+    .displayArea{ min-height: 140px; }
 
     .word{
       margin: 18px 0 10px;
       line-height: 1.1;
       word-break: break-word;
     }
-
     .word-text{
       font-size: 30px;
       font-weight: 400;
@@ -222,9 +201,6 @@
       overflow-wrap: anywhere;
     }
 
-    /* =========================================================
-       復習チェック（答え合わせ時だけ）
-     ========================================================= */
     .missBox{
       display:none;
       margin-top: 12px;
@@ -244,9 +220,6 @@
     .missBox input{ width: 22px; height: 22px; margin:0; }
     .missBox .label{ font-size: 16px; user-select: none; white-space: nowrap; display: inline-block;}
 
-    /* =========================================================
-       ダークモード
-     ========================================================= */
     body.dark{
       background: #0f1115;
       color: #e9e9ea;
@@ -275,7 +248,6 @@
     body.dark .rangeInput{ border-color: var(--bd-dark); }
     body.dark .word-num-header{ color:#aaa; }
 
-    /* ★ダークモード：復習系UIの淡い色 */
     body.dark .reviewUI{
       background: rgba(255,255,255,0.06);
       border-color: var(--bd-dark);
@@ -284,24 +256,23 @@
     body.dark .reviewUI:hover{
       background: rgba(255,255,255,0.10);
     }
-
   </style>
 </head>
 
 <body>
   <div class="card">
 
-    <!-- ★上段（0/0・リセット・復習Reset） -->
     <div class="topbar">
       <div class="badge" id="progress">0 / 0</div>
 
       <div class="topbar-right">
         <button id="resetBtn" class="small reviewUI" type="button">全Reset</button>
-        <button class="small reviewUI" id="clearWrongBtn" type="button">復習Reset</button>
+
+        <!-- ★ここだけ pressWhite を追加（押してる時だけ白くなる） -->
+        <button class="small reviewUI pressWhite" id="clearWrongBtn" type="button">復習Reset</button>
       </div>
     </div>
 
-    <!-- ★2段目（復習開始・発音・ダーク） -->
     <div class="row">
       <label class="pill togglePill reviewUI" for="wrongOnlyToggle">
         <input type="checkbox" id="wrongOnlyToggle" />
@@ -312,7 +283,6 @@
       <button class="small toggle" id="themeToggle" type="button">🌙</button>
     </div>
 
-    <!-- ★3段目（範囲＋単語番号） -->
     <div class="row">
       <div class="rangeStack">
         <label class="badge" style="display:flex; gap:8px; align-items:center;">
@@ -326,7 +296,6 @@
       </div>
     </div>
 
-    <!-- ★表示エリア（高さ固定） -->
     <div class="displayArea">
       <div class="word">
         <span class="word-text" id="wordText">（reading…）</span>
@@ -334,18 +303,15 @@
       <div class="meaning" id="meaning"></div>
     </div>
 
-    <!-- 次へ -->
     <div class="btns">
       <button class="primary" id="nextBtn" type="button">はじめる</button>
     </div>
 
-    <!-- ▼答え合わせ中だけ出る：復習リストに追加 -->
     <div class="missBox reviewUI" id="missBox">
       <input type="checkbox" id="missToggle">
       <label class="label" for="missToggle">復習リストに追加</label>
     </div>
 
-    <!-- 発音 -->
     <div class="btns">
       <button id="speakBtn" type="button">🔊 発音</button>
     </div>
@@ -353,9 +319,6 @@
   </div>
 
 <script>
-/**
- * ▼単語リスト
- */
 const VOCAB = [
   { en: "create",   ja: "を創り出す；を引き起こす" },
   { en: "increase", ja: "増加する（⇔ decrease ⇒ 223）；を増やす" },
@@ -364,18 +327,12 @@ const VOCAB = [
   { en: "own",      ja: "を所有している；（事実・罪など）を認める" },
 ];
 
-// =======================
-//  保存キー
-// =======================
 const KEY_AUDIO       = "vocab_app_audio_on_v1";
 const KEY_WRONG_SET   = "vocab_wrong_set_v1";
 const KEY_WRONG_ONLY  = "vocab_wrong_only_v1";
 const KEY_THEME       = "vocab_theme_v1";
 const KEY_RANGE       = "vocab_range_v1";
 
-// =======================
-//  ユーティリティ
-// =======================
 function shuffle(arr){
   for (let i = arr.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
@@ -394,9 +351,6 @@ function clamp(n, min, max){
   return Math.max(min, Math.min(max, n));
 }
 
-// =======================
-//  範囲（From/To）
-// =======================
 function loadRange(){
   const saved = loadJSON(KEY_RANGE);
   const maxN = VOCAB.length;
@@ -419,9 +373,6 @@ function saveRange(r){
   saveJSON(KEY_RANGE, r);
 }
 
-// =======================
-//  テーマ（ライト/ダーク）
-// =======================
 function loadTheme(){
   const v = localStorage.getItem(KEY_THEME);
   return (v === "dark" || v === "light") ? v : "light";
@@ -436,9 +387,6 @@ function applyTheme(theme){
   if (btn) btn.textContent = isDark ? "☀️" : "🌙";
 }
 
-// =======================
-//  発音（Web Speech API）
-// =======================
 function pickEnglishVoice(){
   const voices = speechSynthesis.getVoices();
   const preferred =
@@ -452,7 +400,7 @@ function pickEnglishVoice(){
 
 function loadAudioOn(){
   const v = localStorage.getItem(KEY_AUDIO);
-  return v === null ? true : v === "1"; // デフォON
+  return v === null ? true : v === "1";
 }
 function saveAudioOn(on){
   localStorage.setItem(KEY_AUDIO, on ? "1" : "0");
@@ -473,13 +421,9 @@ function speakEnglish(text){
   if (voice) u.voice = voice;
   u.rate = 1.0;
   u.pitch = 1.0;
-
   speechSynthesis.speak(u);
 }
 
-// =======================
-//  間違いリスト（Set）
-// =======================
 function loadWrongSet(){
   const arr = loadJSON(KEY_WRONG_SET);
   return new Set(Array.isArray(arr) ? arr : []);
@@ -492,9 +436,6 @@ function updateWrongCountUI(){
   document.getElementById("wrongCount").textContent = `（${set.size}）`;
 }
 
-// =======================
-//  出題モード（全 / 間違いのみ）
-// =======================
 function loadWrongOnly(){
   return localStorage.getItem(KEY_WRONG_ONLY) === "1";
 }
@@ -502,17 +443,15 @@ function saveWrongOnly(on){
   localStorage.setItem(KEY_WRONG_ONLY, on ? "1" : "0");
 }
 
-// ★ 進行状態キーを「範囲ごと」に分ける
 function getActiveStateKey(){
   const { from, to } = loadRange();
   const base = loadWrongOnly() ? "wrong" : "all";
   return `vocab_state_${base}_r${from}-${to}_v1`;
 }
 
-// 出題プール（VOCABのindex配列）
 function getPoolIndices(){
   const { from, to } = loadRange();
-  const start = from - 1; // 0-based
+  const start = from - 1;
   const end   = to - 1;
 
   const ranged = [];
@@ -520,9 +459,7 @@ function getPoolIndices(){
     if (i >= 0 && i < VOCAB.length) ranged.push(i);
   }
 
-  if (!loadWrongOnly()){
-    return ranged;
-  }
+  if (!loadWrongOnly()) return ranged;
 
   const set = loadWrongSet();
   return ranged.filter(i => set.has(VOCAB[i].en));
@@ -530,7 +467,7 @@ function getPoolIndices(){
 
 function freshStateForPool(poolIdxs){
   const order = shuffle([...Array(poolIdxs.length).keys()]);
-  return { poolIdxs, order, index: 0, phase: 0 }; // phase:0英 1日
+  return { poolIdxs, order, index: 0, phase: 0 };
 }
 
 function loadState(){
@@ -557,9 +494,6 @@ function getCurrentItem(st){
   return { item: VOCAB[poolIndex], vocabIndex: poolIndex };
 }
 
-// =======================
-//  UI
-// =======================
 function setUI(st){
   const wordNumHeaderEl = document.getElementById("wordNumHeader");
   const wordTextEl = document.getElementById("wordText");
@@ -588,7 +522,6 @@ function setUI(st){
 
   const cur = getCurrentItem(st);
   const current = cur.item;
-
   const number = cur.vocabIndex + 1;
 
   progressEl.textContent = `${st.index + 1} / ${st.poolIdxs.length}`;
@@ -613,7 +546,6 @@ function setUI(st){
 
 function nextAction(){
   let st = loadState();
-
   if (!st){
     const pool = getPoolIndices();
     st = freshStateForPool(pool);
@@ -640,16 +572,12 @@ function resetAll(){
   setUI(st);
 }
 
-// =======================
-//  初期化
-// =======================
 function init(){
   if (!VOCAB.length){
     document.getElementById("wordText").textContent = "VOCABが空です";
     return;
   }
 
-  // テーマ初期化
   applyTheme(loadTheme());
   document.getElementById("themeToggle").addEventListener("click", () => {
     const now = loadTheme();
@@ -658,7 +586,6 @@ function init(){
     applyTheme(next);
   });
 
-  // voice読み込み遅延対策（iOS/Safari）
   if (window.speechSynthesis){
     speechSynthesis.onvoiceschanged = () => updateAudioUI();
     setTimeout(updateAudioUI, 200);
@@ -668,7 +595,6 @@ function init(){
     document.getElementById("speakBtn").disabled = true;
   }
 
-  // 範囲UI初期化
   const rangeFromEl = document.getElementById("rangeFrom");
   const rangeToEl   = document.getElementById("rangeTo");
   const r = loadRange();
@@ -701,10 +627,8 @@ function init(){
   rangeFromEl.addEventListener("change", onRangeChange);
   rangeToEl.addEventListener("change", onRangeChange);
 
-  // 間違い数表示
   updateWrongCountUI();
 
-  // 復習開始トグル初期化
   const wrongOnlyToggle = document.getElementById("wrongOnlyToggle");
   wrongOnlyToggle.checked = loadWrongOnly();
   wrongOnlyToggle.addEventListener("change", () => {
@@ -718,7 +642,6 @@ function init(){
     setUI(st);
   });
 
-  // 間違いチェック（答え合わせ中に押す）
   document.getElementById("missToggle").addEventListener("change", (e) => {
     const st = loadState();
     if (!st) return;
@@ -733,7 +656,6 @@ function init(){
     updateWrongCountUI();
   });
 
-  // 復習リスト消去（=復習Reset）
   document.getElementById("clearWrongBtn").addEventListener("click", () => {
     saveWrongSet(new Set());
     updateWrongCountUI();
@@ -744,18 +666,15 @@ function init(){
     setUI(st);
   });
 
-  // 進行状態の初期化
   const pool = getPoolIndices();
   let st = loadState();
   if (!st) st = freshStateForPool(pool);
   saveState(st);
   setUI(st);
 
-  // 次へ / 全Reset
   document.getElementById("nextBtn").addEventListener("click", nextAction);
   document.getElementById("resetBtn").addEventListener("click", resetAll);
 
-  // 発音ボタン
   document.getElementById("speakBtn").addEventListener("click", () => {
     const st2 = loadState();
     if (!st2) return;
@@ -764,7 +683,6 @@ function init(){
     speakEnglish(cur.item.en);
   });
 
-  // 発音ON/OFFトグル
   document.getElementById("audioToggle").addEventListener("click", () => {
     const on = loadAudioOn();
     saveAudioOn(!on);
