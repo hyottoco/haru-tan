@@ -2478,12 +2478,12 @@ function setUI(st){
 
   if (st.phase === 0){
     meaningEl.textContent = "";
-    btn.textContent = "日本語を表示（答え合わせ）";
+    btn.textContent = "日本語訳を確認 （答え合わせ）";
     missBox.classList.remove("show");
     speakEnglish(current.en);
   } else {
     meaningEl.textContent = current.ja;
-    btn.textContent = "正解だったかな？ 次の単語へ";
+    btn.textContent = "正解だったかな？ 次の単語へ！";
     missBox.classList.add("show");
   }
 }
