@@ -179,12 +179,39 @@
     body.dark .word-num-header{
       color:#aaa;
     }
+
+        /* =========================
+      ★上段の 0/0・リセット・復習リスト消去 を揃える
+    ========================= */
+    .topbar{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;     /* 高さ位置を揃える */
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-right{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* badge と small button の高さ・文字を揃える */
+    .badge,
+    button.small{
+      font-size: 14px;
+      line-height: 1;         /* 文字の上下ズレ防止 */
+      padding: 10px 12px;     /* 高さを揃える */
+      border-radius: 999px;   /* 見た目も揃う（好みで） */
+    }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <div class="top">
+    <!-- <div class="top">
       <div class="badge" id="progress">0 / 0</div>
 
     <div class="btns">
@@ -199,7 +226,24 @@
         <button class="toggle small" id="audioToggle">🔊 発音：ON</button>
         <button class="toggle small" id="themeToggle">🌙 ダーク</button>
       </div>
+    </div> -->
+
+    <!-- ★上段（0/0・リセット・復習リスト消去） -->
+    <div class="topbar">
+      <div class="badge" id="progress">0 / 0</div>
+
+      <div class="topbar-right">
+        <button id="resetBtn" class="small danger" type="button">リセット</button>
+        <button class="small danger" id="clearWrongBtn" type="button">復習リスト消去</button>
+      </div>
     </div>
+
+    <!-- ★2段目（発音・ダーク） -->
+    <div class="row">
+      <button class="toggle small" id="audioToggle">🔊 発音：ON</button>
+      <button class="toggle small" id="themeToggle">🌙 ダーク</button>
+    </div>
+
 
     <!-- 出題モード切替（全 / 間違いのみ） + 範囲指定 -->
     <div class="row">
